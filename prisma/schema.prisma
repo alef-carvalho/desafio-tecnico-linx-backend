@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PetType {
+  CAT
+  DOG
+}
+
+enum PetVaccineStatus {
+  APPLIED
+  PENDING
+}
+
+enum UserRole {
+  ADMIN
+  CLIENT
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(50)
+  email      String   @unique
+  phone      String?
+  password   String?
+  role       UserRole @default(CLIENT)
+  active     Boolean? @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  pets Pet[]
+
+  @@map("users")
+}
+
+model Pet {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  name       String   @db.VarChar(50)
+  birth_date DateTime @db.Date
+  type       PetType
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  vaccines PetVaccines[]
+
+  @@map("pets")
+}
+
+model Vaccine {
+  id          Int     @id @default(autoincrement())
+  name        String  @db.VarChar(50)
+  description String? @db.VarChar(100)
+
+  petVaccines PetVaccines[]
+
+  @@map("vacines")
+}
+
+model PetVaccines {
+  id         Int              @id @default(autoincrement())
+  pet_id     Int
+  vaccine_id Int
+  date       DateTime         @db.Date
+  status     PetVaccineStatus @default(PENDING)
+
+  pet     Pet     @relation(fields: [pet_id], references: [id], onDelete: Cascade)
+  vaccine Vaccine @relation(fields: [vaccine_id], references: [id], onDelete: Cascade)
+
+  @@map("pet_vaccines")
+}

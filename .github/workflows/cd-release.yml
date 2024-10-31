@@ -1,0 +1,31 @@
+name: cd-release
+
+on:
+  push:
+    tags:
+      - 'v*-development'
+      - 'v*-staging'
+      - 'v*-production'
+
+jobs:
+
+  release:
+    uses: alef-carvalho/infra/.github/workflows/cd-release.yml@main
+    with:
+      CI_AWS_REGION: ${{ vars.CI_AWS_REGION }}
+      CI_REGISTRY_HOST: ${{ vars.CI_REGISTRY_HOST }}
+      CI_REGISTRY_NAME: ${{ vars.CI_REGISTRY_NAME }}
+      CI_REGISTRY_NAMESPACE: ${{ vars.CI_REGISTRY_NAMESPACE }}
+      CI_SERVICE_NAME: "api"
+    secrets:
+      CI_AWS_ACCESS_KEY: ${{ secrets.CI_AWS_ACCESS_KEY }}
+      CI_AWS_SECRET_KEY: ${{ secrets.CI_AWS_SECRET_KEY }}
+      CI_GIT_TOKEN: ${{ secrets.CI_DEPLOY_TOKEN }}
+
+
+
+
+
+
+
+

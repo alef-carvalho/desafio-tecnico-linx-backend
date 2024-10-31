@@ -1,0 +1,16 @@
+name: cd-version
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - development
+      - staging
+      - production
+
+jobs:
+
+  version:
+    uses: alef-carvalho/infra/.github/workflows/cd-version.yml@main
+    secrets:
+      CI_GIT_TOKEN: ${{ secrets.CI_DEPLOY_TOKEN }}
